@@ -1,7 +1,7 @@
-# Iris Flower Classification using Logistic Regression
+# Stock Market Prediction using LSTM
 
 ## Overview
-This project uses the **Iris dataset** to predict the species of iris flowers based on their physical features using **Logistic Regression**. The dataset consists of measurements for sepals and petals, and the goal is to classify the species into three types: **Iris-setosa**, **Iris-versicolor**, and **Iris-virginica**.
+This project implements a **Stock Market Prediction** model using **Long Short-Term Memory (LSTM)** networks. The dataset consists of historical stock prices, and the goal is to predict future stock prices based on past trends. The dataset used is from **Tata Global Beverages**.
 
 ## Table of Contents
 - [Overview](#-overview)
@@ -17,116 +17,101 @@ This project uses the **Iris dataset** to predict the species of iris flowers ba
 
 ## Installation
 
-To get started, install the required dependencies by running:
+Clone the repository and install the required dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Make sure your `requirements.txt` contains the following dependencies:
+Ensure that `requirements.txt` contains the following dependencies:
 
 ```
 numpy
 pandas
 matplotlib
 scikit-learn
+tensorflow
 ```
 
 ## Usage
 
-1. **Download the Dataset**:
-   The Iris dataset can be accessed through various sources. One of the common places to get it is via the `sklearn` library:
-
-```python
-from sklearn.datasets import load_iris
-data = load_iris()
-```
+1. **Load the Dataset**:
+   The dataset is available at:
+   ```
+   https://raw.githubusercontent.com/mwitiderrick/stockprice/master/NSE-TATAGLOBAL.csv
+   ```
+   Load it using Pandas:
+   ```python
+   import pandas as pd
+   data = pd.read_csv('NSE-TATAGLOBAL.csv')
+   data = data.iloc[::-1]  # Reverse the dataset order
+   ```
 
 2. **Data Preprocessing**:
-   - Load the dataset using Pandas.
-   - Split the dataset into features (sepal length, sepal width, petal length, petal width) and target (species).
+   - Handle missing values (if any)
+   - Normalize data using `MinMaxScaler`
+   - Split data into training and testing sets
 
-3. **Train the Logistic Regression Model**:
-   Use the **Logistic Regression** algorithm from Scikit-learn to classify the flower species based on the features.
+3. **Train the LSTM Model**:
+   - Define an LSTM network with multiple layers.
+   - Train the model using `Adam` optimizer and `mean_squared_error` loss function.
 
 4. **Make Predictions**:
-   After training, use the model to predict the species of new flower data.
+   - Use the trained model to predict future stock prices.
+   - Rescale predicted values to match the original price range.
 
 5. **Evaluate the Model**:
-   Evaluate the model performance using metrics such as accuracy, precision, recall, and F1-score.
+   - Use **Mean Squared Error (MSE)** for model evaluation.
+   - Plot predictions alongside actual stock prices for visualization.
 
 ## Features
 
-- **Logistic Regression Model**: A simple yet powerful classification algorithm used to predict flower species.
-- **Data Preprocessing**: Handles missing values and scales the data.
-- **Model Evaluation**: Includes accuracy and other evaluation metrics for classification performance.
-- **Visualization**: Provides visualizations to help understand the classification results.
+- **LSTM-Based Prediction**: Uses an advanced RNN model for time series forecasting.
+- **Data Normalization**: Scales stock prices for effective model training.
+- **Train-Test Split**: Implements an 80-20 split for evaluation.
+- **Graphical Visualization**: Uses Matplotlib for plotting trends and predictions.
 
 ## Dependencies
 
-- `numpy`: For numerical operations.
-- `pandas`: For data manipulation.
-- `matplotlib`: For plotting graphs.
-- `scikit-learn`: For machine learning models and evaluation.
+- `numpy` - For numerical operations.
+- `pandas` - For data manipulation.
+- `matplotlib` - For plotting graphs.
+- `scikit-learn` - For data preprocessing.
+- `tensorflow` - For deep learning (LSTM model).
 
 ## Model Overview
 
-The **Logistic Regression** model used in this project is a simple yet effective classifier for this multi-class classification problem. Logistic Regression is typically used for binary classification, but it can be extended to multi-class classification using techniques like One-vs-Rest (OvR).
+The **LSTM (Long Short-Term Memory)** model is used for stock price prediction due to its ability to handle sequential data efficiently.
 
-### Model Workflow:
-1. **Input Features**: Sepal Length, Sepal Width, Petal Length, Petal Width.
-2. **Output**: Predicted Species (Iris-setosa, Iris-versicolor, Iris-virginica).
-3. **Training**: The model is trained on the Iris dataset.
-4. **Prediction**: Once trained, the model predicts the species based on input features.
+### Model Architecture:
+1. **Input Layer**: Takes past stock prices as input.
+2. **LSTM Layers**: Extract sequential patterns.
+3. **Dense Layer**: Outputs the predicted stock price.
 
-### Example of Logistic Regression Training:
+### Example Model Code:
 ```python
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM
 
-# Load the dataset
-X = data.data
-y = data.target
+model = Sequential()
+model.add(LSTM(50, return_sequences=True, input_shape=(100, 1)))
+model.add(LSTM(50, return_sequences=True))
+model.add(LSTM(50))
+model.add(Dense(1))
 
-# Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-
-# Initialize the model
-model = LogisticRegression(max_iter=200)
-
-# Train the model
-model.fit(X_train, y_train)
-
-# Make predictions
-y_pred = model.predict(X_test)
-
-# Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {accuracy * 100:.2f}%")
+model.compile(loss='mean_squared_error', optimizer='adam')
 ```
 
-## Examples
+## Example Usage
 
-### Predicting Species for New Data
-
-Once the model is trained, you can predict the species for new iris flowers based on their physical features:
+### Predicting Future Stock Prices
 
 ```python
-# New data: Sepal Length, Sepal Width, Petal Length, Petal Width
-new_data = [[5.1, 3.5, 1.4, 0.2]]  # Example of Iris-setosa flower
-
-# Make prediction
-prediction = model.predict(new_data)
-
-# Output the predicted species
-print(f"Predicted species: {data.target_names[prediction]}")
+import numpy as np
+predictions = model.predict(X_test)
+predictions = scaler.inverse_transform(predictions)  # Rescale values
+print(predictions)
 ```
 
-## Troubleshooting
-
-- **Model performance is low**: If the model is not performing well, try adjusting the hyperparameters of the Logistic Regression model, such as the regularization strength `C`.
-- **Data issues**: Ensure that the data is clean and appropriately preprocessed, without missing values.
-- **Runtime errors**: Check if the dependencies are correctly installed and ensure compatibility between them.
 
 
