@@ -7,9 +7,7 @@
 - [Dependencies](#-dependencies)
 - [Model Overview](#-model-overview)
 - [Examples](#-examples)
-- [Troubleshooting](#-troubleshooting)
-- [Contributors](#-contributors)
-- [License](#-license)
+
 
 ## Overview
 This project implements a **Stock Market Prediction** model using **Long Short-Term Memory (LSTM)** networks. The dataset consists of historical stock prices, and the goal is to predict future stock prices based on past trends. The dataset used is from **Tata Global Beverages**.
