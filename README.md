@@ -55,7 +55,7 @@ data = load_iris()
 5. **Evaluate the Model**:
    Evaluate the model performance using metrics such as accuracy, precision, recall, and F1-score.
 
-## 🚀 Features
+## Features
 
 - **Logistic Regression Model**: A simple yet powerful classification algorithm used to predict flower species.
 - **Data Preprocessing**: Handles missing values and scales the data.
